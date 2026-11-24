@@ -37,6 +37,16 @@ def main() -> int:
             file=sys.stderr,
         )
         return 1
+    # The entry is one sentence: it must end with sentence-ending
+    # punctuation and hold no internal sentence break (". " followed
+    # by a capital would be a second sentence hiding in the line).
+    if text[-1] not in ".!?":
+        print("error: line must end with sentence-ending punctuation", file=sys.stderr)
+        return 1
+    for i, ch in enumerate(text[:-2]):
+        if ch in ".!?" and text[i + 1] == " " and text[i + 2].isupper():
+            print("error: line must be a single sentence", file=sys.stderr)
+            return 1
 
     out_dir = Path(os.environ.get("MAKEFUN_OUTPUT_DIR", "/output"))
     out_dir.mkdir(parents=True, exist_ok=True)
